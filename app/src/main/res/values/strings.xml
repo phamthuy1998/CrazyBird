@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Crazy Bird</string>
+    <string name="no_internet">No internet</string>
+    <string name="score">Score: %d</string>
+    <string name="btn_start">Start</string>
+    <string name="game_over">Game over</string>
+    <string name="touch_on_screen_to_continue">Touch on screen to continue</string>
+</resources>
