@@ -8,7 +8,7 @@ import java.util.*
 import java.util.concurrent.RecursiveTask
 
 data class Pipe(
-    var speed: Int = 15 * ScreenUtils.getWidth() / 1080,
+    var speed: Int = 10 * ScreenUtils.getWidth() / 1080,
 ) : BaseObjectView() {
 
     fun draw(canvas: Canvas) {

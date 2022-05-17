@@ -1,6 +1,5 @@
 package com.thuypham.ptithcm.crazybird.custom_view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -39,6 +38,14 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
         screenHeight = ScreenUtils.getHeight(context)
         initBird()
         initPipe()
+        handler1 = Handler()
+        runnable = Runnable {
+            run {
+                Log.d("Thuyyy", "startTimer")
+                invalidate()
+            }
+        }
+        Log.d("Thuyyy", "init")
     }
 
     /**
@@ -109,20 +116,19 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
                     pipe.speed = 0
                     isGameOver = true
                     onGameOverListener?.invoke(score)
-                    stopTimer()
                 }
 
                 /* Calculate score */
                 if (bird?.canPlusScore(pipe, index, halfSumPipe) == true) {
                     score++
                     onScoreChangeListener?.invoke(score)
-                    if (score == 5) {
-                        sumPipe = 6
-                        halfSumPipe = 3
-                    } else if (score == 30) {
-                        sumPipe = 6
-                        halfSumPipe = 3
-                    }
+//                    if (score == 5) {
+//                        sumPipe = 6
+//                        halfSumPipe = 3
+//                    } else if (score == 30) {
+//                        sumPipe = 6
+//                        halfSumPipe = 3
+//                    }
                 }
 
                 /* Calculate position for y*/
@@ -145,8 +151,11 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
                 bird?.drop = (-15 * screenHeight / DEF_SCREEN_HEIGHT).toFloat()
             }
         }
+
+        if (!isGameOver || bird?.isBirdPressBottomScreen(screenHeight) == false) {
+            startTimer()
+        }
         drawBird(canvas)
-        startTimer()
     }
 
     private fun drawBird(canvas: Canvas?) {
@@ -154,25 +163,19 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
     }
 
     private fun stopTimer() {
-        runnable = null
         runnable?.let { handler1?.removeCallbacks(it) }
+        runnable = null
         handler1 = null
+        Log.d("Thuyyy", "stopTimer")
     }
 
     private fun startTimer() {
-        handler1 = Handler()
-        runnable = Runnable {
-            run {
-                invalidate()
-            }
-        }
         runnable?.let { handler1?.postDelayed(it, 10) }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
+    fun setOnTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_DOWN) {
-            bird?.drop = -15f
+            bird?.drop = -20f
         }
         return true
     }
@@ -181,12 +184,14 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
         this.onScoreChangeListener = listener
     }
 
-    fun setIsGameOverListener(listener: (score: Int) -> Unit) {
+    fun setOnGameOverListener(listener: (score: Int) -> Unit) {
         this.onGameOverListener = listener
     }
 
 
     fun startGame() {
+        startTimer()
+        isGameStared = true
         isGameStared = true
         isGameOver = false
     }
@@ -198,9 +203,11 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
 
     fun resetGame() {
         isGameOver = false
+        isGameStared = true
         score = 0
         initBird()
         initPipe()
+        startTimer()
     }
 
 }

@@ -17,7 +17,7 @@ data class Bird(
     }
 
     private fun drop(screenHeight: Int) {
-        drop += 0.7f
+        drop += 2f
         if (y ?: 0f < screenHeight)
             y = y?.plus(drop)
     }
@@ -81,6 +81,10 @@ data class Bird(
 
     fun isBirdOverScreen(screenHeight: Int): Boolean {
         return y ?: 0f + (height ?: 0) >= screenHeight || y ?: 0f <= 0
+    }
+
+    fun isBirdPressBottomScreen(screenHeight: Int): Boolean {
+        return y ?: 0f + (height ?: 0) >= screenHeight
     }
 
     fun canPlusScore(pipe: Pipe, index: Int, halfSumPipe: Int): Boolean {
