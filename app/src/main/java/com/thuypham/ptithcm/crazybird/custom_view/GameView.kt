@@ -31,6 +31,7 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
 
     private var isGameStared = false
     private var isGameOver = false
+    private var isInvokeGameOver = false
     private var onGameOverListener: ((Int) -> Unit?)? = null
 
     init {
@@ -115,7 +116,10 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
                 if (bird?.isBirdPressThePipe(pipe) == true || bird?.isBirdOverScreen(screenHeight) == true) {
                     pipe.speed = 0
                     isGameOver = true
-                    onGameOverListener?.invoke(score)
+                    if (!isInvokeGameOver) {
+                        isInvokeGameOver = true
+                        onGameOverListener?.invoke(score)
+                    }
                 }
 
                 /* Calculate score */
@@ -191,6 +195,7 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
 
     fun startGame() {
         startTimer()
+        isInvokeGameOver = false
         isGameStared = true
         isGameStared = true
         isGameOver = false
@@ -202,6 +207,7 @@ class GameView(context: Context, attributeSet: AttributeSet) : View(context, att
     }
 
     fun resetGame() {
+        isInvokeGameOver = false
         isGameOver = false
         isGameStared = true
         score = 0
